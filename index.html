@@ -4,221 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Safe Vault - Secure Login</title>
-    <!-- Fonts for premium look -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* Background and General Setup */
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #121212; /* Dark background */
-            font-family: 'Poppins', sans-serif;
-        }
-
-        /* Golden Card Container */
-        .card-container {
-            display: flex;
-            width: 850px;
-            height: 500px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.2);
-            overflow: hidden;
-            background: #ffffff;
-        }
-
-        /* Left Side - Login Area */
-        .left-side {
-            flex: 1;
-            padding: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .left-side h2 {
-            margin-top: 0;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            transition: 0.3s;
-            box-sizing: border-box;
-        }
-
-        .input-group input:focus {
-            border-color: #d4af37;
-            box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
-        }
-
-        .btn-gold {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #d4af37, #f3e5ab, #d4af37);
-            border: none;
-            border-radius: 8px;
-            color: #000;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-gold:hover {
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .signup-link {
-            margin-top: 15px;
-            font-size: 13px;
-            text-align: center;
-        }
-
-        .signup-link a {
-            color: #d4af37;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* Right Side - Branding Area */
-        .right-side {
-            flex: 1;
-            background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            border-left: 2px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .logo-icon {
-            font-size: 70px;
-            margin-bottom: 10px;
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
-        }
-
-        .safe-vault-text {
-            font-family: 'Cinzel', serif;
-            font-size: 45px;
-            color: #1a1a1a;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
-            margin: 0;
-        }
-
-        /* Popup Modal CSS */
-        .modal {
-            display: none; 
-            position: fixed;
-            z-index: 10;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            width: 350px;
-            text-align: center;
-            box-shadow: 0 5px 25px rgba(212, 175, 55, 0.3);
-            border: 2px solid #d4af37;
-        }
-
-        .modal-content h3 {
-            margin-top: 0;
-            font-family: 'Cinzel', serif;
-            color: #b38728;
-        }
-
-        .close-btn {
-            color: #aaa;
-            float: right;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
+        body { margin: 0; padding: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #121212; font-family: 'Poppins', sans-serif; }
+        .card-container { display: flex; width: 850px; height: 500px; border-radius: 20px; box-shadow: 0 15px 35px rgba(212, 175, 55, 0.2); overflow: hidden; background: #ffffff; }
+        .left-side { flex: 1; padding: 50px; display: flex; flex-direction: column; justify-content: center; }
+        .input-group { margin-bottom: 20px; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; box-sizing: border-box; }
+        .input-group input:focus { border-color: #d4af37; box-shadow: 0 0 5px rgba(212, 175, 55, 0.5); }
+        .btn-gold { width: 100%; padding: 12px; background: linear-gradient(135deg, #d4af37, #f3e5ab, #d4af37); border: none; border-radius: 8px; color: #000; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-gold:hover { box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); transform: translateY(-2px); }
+        .signup-link { margin-top: 15px; font-size: 13px; text-align: center; }
+        .signup-link a { color: #d4af37; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .right-side { flex: 1; background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-left: 2px solid rgba(255, 255, 255, 0.5); }
+        .logo-icon { font-size: 70px; margin-bottom: 10px; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3)); }
+        .safe-vault-text { font-family: 'Cinzel', serif; font-size: 45px; color: #1a1a1a; letter-spacing: 2px; text-shadow: 1px 1px 3px rgba(255,255,255,0.8); margin: 0; }
+        .modal { display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); justify-content: center; align-items: center; }
+        .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; width: 350px; text-align: center; box-shadow: 0 5px 25px rgba(212, 175, 55, 0.3); border: 2px solid #d4af37; }
+        .modal-content h3 { margin-top: 0; font-family: 'Cinzel', serif; color: #b38728; }
+        .close-btn { color: #aaa; float: right; font-size: 24px; font-weight: bold; cursor: pointer; }
         .close-btn:hover { color: #000; }
-        
-        #verificationStatus {
-            margin-top: 15px;
-            font-size: 14px;
-            color: green;
-            font-weight: bold;
-            display: none;
-        }
+        #verificationStatus { margin-top: 15px; font-size: 14px; color: green; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
-    <!-- Main Card -->
     <div class="card-container">
-        <!-- Left Side (Login) -->
         <div class="left-side">
             <h2>Secure Login</h2>
-            <div class="input-group">
-                <input type="email" id="loginEmail" placeholder="Email Address" required>
-            </div>
-            <div class="input-group">
-                <input type="password" id="loginPass" placeholder="Password" required>
-            </div>
+            <div class="input-group"><input type="email" id="loginEmail" placeholder="Email Address" required></div>
+            <div class="input-group"><input type="password" id="loginPass" placeholder="Password" required></div>
             <button class="btn-gold" id="loginBtn">Login</button>
-            <div class="signup-link">
-                New to Vault? <a id="openSignupModal">Sign up new user</a>
-            </div>
+            <div class="signup-link">New to Vault? <a id="openSignupModal">Sign up new user</a></div>
         </div>
-
-        <!-- Right Side (Branding) -->
         <div class="right-side">
             <div class="logo-icon">🛡️</div>
             <h1 class="safe-vault-text">SAFE<br>VAULT</h1>
         </div>
     </div>
 
-    <!-- Sign Up Popup (Modal) -->
     <div id="signupModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" id="closeModal">&times;</span>
             <h3>Create Account</h3>
-            
             <div id="signupFormSection">
-                <div class="input-group">
-                    <input type="text" id="signupName" placeholder="Full Name" required>
-                </div>
-                <div class="input-group">
-                    <input type="email" id="signupEmail" placeholder="Email Address" required>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="signupPass" placeholder="Create Password" required>
-                </div>
+                <div class="input-group"><input type="text" id="signupName" placeholder="Full Name" required></div>
+                <div class="input-group"><input type="email" id="signupEmail" placeholder="Email Address" required></div>
+                <div class="input-group"><input type="password" id="signupPass" placeholder="Create Password" required></div>
                 <button class="btn-gold" id="sendVerifyBtn">Verify & Create</button>
             </div>
-
-            <!-- This shows after sending email link -->
             <div id="verificationStatus">
                 📩 Link sent to your Email!<br>
                 Please click the link to verify. Waiting for confirmation... ⏳
@@ -226,115 +61,62 @@
         </div>
     </div>
 
-    <!-- Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // 🔥 YAHAN APNA FIREBASE CONFIG DAALEIN 🔥
-       // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+        const firebaseConfig = {
+          apiKey: "AIzaSyCjkkwyknkNvXbpq94StUUjWqANWkqZw8M",
+          authDomain: "safe-vault-00001.firebaseapp.com",
+          projectId: "safe-vault-00001",
+          storageBucket: "safe-vault-00001.firebasestorage.app",
+          messagingSenderId: "900024511097",
+          appId: "1:900024511097:web:5be1911bc1f5e5d5a4c2a8"
+        };
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCjkkwyknkNvXbpq94StUUjWqANWkqZw8M",
-  authDomain: "safe-vault-00001.firebaseapp.com",
-  projectId: "safe-vault-00001",
-  storageBucket: "safe-vault-00001.firebasestorage.app",
-  messagingSenderId: "900024511097",
-  appId: "1:900024511097:web:5be1911bc1f5e5d5a4c2a8"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-
+        // Firebase ka initialization sirf ek baar hona chahiye
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- UI Modal Controls ---
         const modal = document.getElementById("signupModal");
         const openModalBtn = document.getElementById("openSignupModal");
         const closeModalBtn = document.getElementById("closeModal");
 
-        openModalBtn.onclick = () => {
-            modal.style.display = "flex";
-            document.getElementById("signupFormSection").style.display = "block";
-            document.getElementById("verificationStatus").style.display = "none";
-        }
+        openModalBtn.onclick = () => { modal.style.display = "flex"; }
         closeModalBtn.onclick = () => { modal.style.display = "none"; }
-        window.onclick = (event) => { if (event.target == modal) { modal.style.display = "none"; } }
 
-        // --- 1. LOGIN LOGIC ---
         document.getElementById('loginBtn').addEventListener('click', () => {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
-
-            if(!email || !pass) {
-                alert("Please enter Email and Password");
-                return;
-            }
-
             signInWithEmailAndPassword(auth, email, pass)
-                .then((userCredential) => {
-                    // Login Success!
-                    window.location.href = "dashboard.html";
-                })
-                .catch((error) => {
-                    // Login Failed!
-                    alert("Access Denied: Invalid Email or Password");
-                });
+                .then(() => window.location.href = "dashboard.html")
+                .catch(() => alert("Access Denied: Invalid Email or Password"));
         });
 
-        // --- 2. SIGNUP & VERIFICATION LOGIC ---
         document.getElementById('sendVerifyBtn').addEventListener('click', async () => {
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
             const pass = document.getElementById('signupPass').value;
 
-            if(!name || !email || !pass) {
-                alert("Please fill all details");
-                return;
-            }
-
             try {
-                // Create user
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
                 const user = userCredential.user;
-
-                // Send Email Link
                 await sendEmailVerification(user);
-                
-                // Update UI in Popup
                 document.getElementById("signupFormSection").style.display = "none";
                 document.getElementById("verificationStatus").style.display = "block";
 
-                // Check continuously if user clicked the link
                 const checkVerification = setInterval(async () => {
                     await user.reload(); 
                     if (user.emailVerified) {
                         clearInterval(checkVerification); 
-                        
-                        // Create profile in Firestore AFTER verification
-                        await setDoc(doc(db, "users", user.uid), {
-                            name: name,
-                            email: email,
-                            isVerified: true,
-                            createdAt: new Date()
-                        });
-
+                        await setDoc(doc(db, "users", user.uid), { name, email, isVerified: true, createdAt: new Date() });
                         alert("Account Created & Verified Successfully!");
                         window.location.href = "dashboard.html"; 
                     }
-                }, 3000); // Checks every 3 seconds
-
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
+                }, 3000);
+            } catch (error) { alert("Error: " + error.message); }
         });
     </script>
 </body>
