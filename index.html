@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <!-- Signup Modal -->
+    <!-- Modals -->
     <div id="signupModal" class="modal">
         <div class="modal-content">
             <span id="closeSignup" style="float:right; cursor:pointer;">&times;</span>
@@ -54,7 +54,6 @@
         </div>
     </div>
 
-    <!-- Forgot Password Modal -->
     <div id="forgotModal" class="modal">
         <div class="modal-content">
             <span id="closeForgot" style="float:right; cursor:pointer;">&times;</span>
@@ -65,41 +64,33 @@
     </div>
 
     <script type="module">
-        // Import only ONCE
+        // 1. IMPORT ONLY ONCE from the CDN
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // Initialize Firebase
-       // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+        // 2. CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyCjkkwyknkNvXbpq94StUUjWqANWkqZw8M",
+            authDomain: "safe-vault-00001.firebaseapp.com",
+            projectId: "safe-vault-00001",
+            storageBucket: "safe-vault-00001.firebasestorage.app",
+            messagingSenderId: "900024511097",
+            appId: "1:900024511097:web:5be1911bc1f5e5d5a4c2a8"
+        };
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCjkkwyknkNvXbpq94StUUjWqANWkqZw8M",
-  authDomain: "safe-vault-00001.firebaseapp.com",
-  projectId: "safe-vault-00001",
-  storageBucket: "safe-vault-00001.firebasestorage.app",
-  messagingSenderId: "900024511097",
-  appId: "1:900024511097:web:5be1911bc1f5e5d5a4c2a8"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
+        // 3. INITIALIZE ONLY ONCE
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Modals Logic
+        // UI Logic
         document.getElementById("openSignupModal").onclick = () => document.getElementById("signupModal").style.display = "flex";
         document.getElementById("closeSignup").onclick = () => document.getElementById("signupModal").style.display = "none";
         document.getElementById("openForgotModal").onclick = () => document.getElementById("forgotModal").style.display = "flex";
         document.getElementById("closeForgot").onclick = () => document.getElementById("forgotModal").style.display = "none";
 
-        // LOGIN LOGIC
+        // LOGIN
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
@@ -114,7 +105,7 @@ const app = initializeApp(firebaseConfig);
             } catch (e) { alert("Login Failed: " + e.message); }
         });
 
-        // SIGNUP LOGIC (New Account Check)
+        // SIGNUP
         document.getElementById('sendVerifyBtn').addEventListener('click', async () => {
             const email = document.getElementById('signupEmail').value;
             const pass = document.getElementById('signupPass').value;
@@ -125,7 +116,6 @@ const app = initializeApp(firebaseConfig);
                 document.getElementById("signupFormSection").style.display = "none";
                 document.getElementById("verificationStatus").style.display = "block";
                 
-                // Monitor verification
                 const check = setInterval(async () => {
                     await cred.user.reload();
                     if (cred.user.emailVerified) {
@@ -136,11 +126,8 @@ const app = initializeApp(firebaseConfig);
                     }
                 }, 3000);
             } catch (e) {
-                if (e.code === 'auth/email-already-in-use') {
-                    alert("Account already created for this email!");
-                } else {
-                    alert(e.message);
-                }
+                if (e.code === 'auth/email-already-in-use') alert("Account already created for this email!");
+                else alert(e.message);
             }
         });
 
@@ -149,7 +136,7 @@ const app = initializeApp(firebaseConfig);
             const email = document.getElementById('forgotEmail').value;
             try {
                 await sendPasswordResetEmail(auth, email);
-                alert("Reset link sent! Please check your inbox and update password.");
+                alert("Reset link sent! Please check your email.");
                 document.getElementById("forgotModal").style.display = "none";
             } catch (e) { alert(e.message); }
         });
