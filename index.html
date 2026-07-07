@@ -3,202 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Scratch & Win Premium 3D ⚡</title>
-    
+    <title>🎁 Lucky Draw & Scratch Coupon</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
-        }
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { 
+            background: #0f172a; 
+            color: #f8fafc; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
             min-height: 100vh;
-            padding: 15px;
-            overflow-x: hidden;
+            padding: 20px;
         }
         
-        /* 3D Glassmorphism Container */
-        .app-container {
-            background: rgba(255, 255, 255, 0.95);
+        /* 3D Premium Card Layout */
+        .card {
+            background: #1e293b;
             width: 100%;
-            max-width: 410px;
-            border-radius: 24px;
-            padding: 30px 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
-                        inset 0 1px 0 rgba(255,255,255,0.2);
+            max-width: 420px;
+            padding: 35px 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
             text-align: center;
-            transform: perspective(1000px) rotateX(2deg);
-            transition: transform 0.3s ease;
-        }
-        .app-container:hover {
-            transform: perspective(1000px) rotateX(0deg) translateY(-5px);
+            border: 1px solid #334155;
         }
 
-        h2 { 
-            color: #1e1b4b; 
-            margin-bottom: 8px; 
-            font-size: 24px;
-            font-weight: 800;
+        .logo-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
         }
-        p { color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h2 { font-size: 24px; margin-bottom: 8px; color: #fff; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
         
-        /* Interactive 3D Inputs */
+        .input-group { position: relative; margin-bottom: 20px; text-align: left; }
+        label { display: block; font-size: 13px; color: #3b82f6; font-weight: 600; margin-bottom: 8px; margin-left: 4px; }
+        
         .input-field {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #cbd5e1;
-            border-radius: 14px;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 18px;
-            outline: none;
-            text-align: center;
-            letter-spacing: 2px;
-            background: #f8fafc;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
-            transition: all 0.2s ease;
-        }
-        .input-field:focus { 
-            border-color: #4f46e5; 
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-        }
-        
-        /* Premium 3D Buttons */
-        .submit-btn {
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            border-radius: 14px;
+            width: 100%; 
+            padding: 14px; 
+            border: 2px solid #334155; 
+            background: #0f172a;
+            color: white; 
+            border-radius: 10px; 
             font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4), 
-                        0 2px 0 #1e1b4b;
-            transition: all 0.15s ease;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
         }
-        .submit-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 10px rgba(79, 70, 229, 0.4);
-        }
-        .submit-btn:disabled {
-            background: #94a3b8;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-
-        /* Dynamic Screens */
-        #otp-section, #scratch-section {
-            display: none; /* Starting me sirf phone screen dikhegi */
-        }
-
-        /* 3D Scratch Card Design */
-        .card-wrapper {
-            position: relative;
-            width: 320px;
-            height: 160px;
-            margin: 20px auto;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            transform: style 3d;
+        .input-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+            outline: none;
         }
         
-        /* Golden Prize Metallic Underlay */
-        .prize-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .btn {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fef3c7 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 3px dashed #d97706;
-            border-radius: 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white; 
+            border: none; 
+            padding: 14px;
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
         }
-        .prize-layer h3 { color: #b45309; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        .prize-layer h1 { 
-            color: #92400e; 
-            font-size: 28px; 
-            margin-top: 5px;
-            font-weight: 800;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.6);
         }
-        
-        #scratch-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            cursor: pointer;
-            z-index: 10;
-        }
+        .btn:active { transform: translateY(0); }
 
-        .success-msg {
-            color: #059669;
-            font-weight: 700;
-            margin-top: 20px;
-            background: #ecfdf5;
-            padding: 10px;
-            border-radius: 10px;
-            display: none;
-            border: 1px solid #a7f3d0;
+        /* Multi-screen state views hiding */
+        #otp-box, #coupon-result-box { display: none; }
+
+        /* Animated Coupon Box Styles */
+        .coupon-box {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px dashed #f59e0b;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        .coupon-code {
+            font-size: 28px;
+            color: #f59e0b;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin: 15px 0;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+        .success-badge {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <div class="card">
         
-        <div id="phone-section">
-            <h2>📱 Verification</h2>
-            <p>Lucky Draw me hissa lene ke liye apna active number dalein. Ek OTP bheja jayega.</p>
-            <input type="tel" id="cust-phone" class="input-field" placeholder="98765XXXXX" maxlength="10">
-            <button id="btn-send-otp" class="submit-btn">Send OTP Verification ➔</button>
-        </div>
-
-        <div id="otp-section">
-            <h2>🔑 Enter OTP</h2>
-            <p id="otp-screen-msg">Humne aapke number par 6-digit code bheja hai.</p>
-            <input type="text" id="otp-code" class="input-field" placeholder="XXXXXX" maxlength="6">
-            <button id="btn-verify-otp" class="submit-btn">Verify & Unlock Card ➔</button>
-        </div>
-
-        <div id="scratch-section">
-            <h2>🎁 Scratch Your Reward!</h2>
-            <p>Apni ungli se screen ko ghis kar apna offer claim karein.</p>
+        <div id="phone-box">
+            <div class="logo-icon">🎁</div>
+            <h2>Lucky Draw Content</h2>
+            <p>Apna 10-digit ka mobile number dalein aur apna exclusive discount coupon claim karein.</p>
             
-            <div class="card-wrapper">
-                <div class="prize-layer">
-                    <h3>🎉 Special Reward:</h3>
-                    <h1 id="prize-text">Loading...</h1>
-                </div>
-                <canvas id="scratch-canvas" width="320" height="160"></canvas>
+            <div class="input-group">
+                <label for="phone-input">MOBILE NUMBER</label>
+                <input type="tel" id="phone-input" class="input-field" placeholder="98765xxxxx" maxlength="10">
             </div>
             
-            <div id="status-message" class="success-msg">✅ Saved! Show this to Shop Owner.</div>
+            <button id="btn-send-otp" class="btn">Coupon Unlock Karein ➔</button>
         </div>
+
+        <div id="otp-box">
+            <div class="logo-icon">🔑</div>
+            <h2>OTP Verification</h2>
+            <p>Humne aapke number par ek suraksha OTP bheja hai. Use niche enter karein.</p>
+            
+            <div class="input-group">
+                <label for="otp-input">ENTER 6-DIGIT OTP</label>
+                <input type="number" id="otp-input" class="input-field" placeholder="******" oninput="if(this.value.length > 6) this.value = this.value.slice(0,6);">
+            </div>
+            
+            <button id="btn-verify-otp" class="btn">Verify & Scratch ➔</button>
+        </div>
+
+        <div id="coupon-result-box">
+            <div class="logo-icon">🎉</div>
+            <h2>Badhai Ho!</h2>
+            <p>Aapka unique lucky discount coupon code generate ho gaya hai. Iska screenshot dukan par dikhayein.</p>
+            
+            <div class="coupon-box">
+                <span class="success-badge">ACTIVE COUPON</span>
+                <div id="coupon-text" class="coupon-code">GETTING CODE...</div>
+                <p style="margin-bottom:0; font-size:12px; color:#64748b;">Yeh coupon code sirf isi dukan par valid hai.</p>
+            </div>
+        </div>
+
+        <div id="recaptcha-container"></div>
 
     </div>
 
-    <div id="recaptcha-container"></div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        // Auth package ko bhi import kiya OTP ke liye
-        import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // Aapki exact Firebase Credentials Config
+        // Exact Database configuration credentials
         const firebaseConfig = {
             apiKey: "AIzaSyCrmVNSFa6mt1nJiY3kgkxHNYJyUWu625o",
             authDomain: "scratch-vault-001.firebaseapp.com",
@@ -212,173 +177,104 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        let confirmationResult;
+
+        // 1. Dukan ki identity fetch karna URL param se (?shop=email)
         const urlParams = new URLSearchParams(window.location.search);
-        const currentShopId = urlParams.get('shop') || "Nikhil_Default_Shop";
+        const currentShopId = urlParams.get('shop') || 'nikhil@gmail.com'; 
 
-        let userPhone = "";
-        let finalPrize = "";
-        let dataSaved = false;
-        let confirmationResultGlobal = null; // OTP flow hold karne ke liye
-
-        const prizesPool = [
-            "10% Cash Discount",
-            "Free Surprise Gift",
-            "Rs. 20 Cashback",
-            "Buy 1 Get 1 Free",
-            "5% OFF on Next Bill"
-        ];
-
-        const phoneSection = document.getElementById('phone-section');
-        const otpSection = document.getElementById('otp-section');
-        const scratchSection = document.getElementById('scratch-section');
-        const prizeText = document.getElementById('prize-text');
-        const canvas = document.getElementById('scratch-canvas');
-        const statusMsg = document.getElementById('status-message');
-
-        // Setup Invisible Security Check for OTP
+        // Invisible reCAPTCHA configuration Setup
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
             'size': 'invisible'
         });
 
-        // 1. BUTTON CLICK: SEND OTP / DUPLICATE CHECK
+        // 2. PRIMARY ACTION: CHECK NUMBER & TRIGGER OTP (IF NEW)
         document.getElementById('btn-send-otp').addEventListener('click', async () => {
-            const rawPhone = document.getElementById('cust-phone').value;
-            if(rawPhone.length !== 10 || isNaN(rawPhone)) {
-                alert("Kripya sahi 10-digit mobile number daalein!");
+            const rawPhone = document.getElementById('phone-input').value.trim();
+            
+            if (rawPhone.length !== 10 || isNaN(rawPhone)) {
+                alert("Kripya sahi 10-digit ka mobile number dalein.");
                 return;
             }
 
-            userPhone = "+91" + rawPhone; // India country code compulsory hai auth ke liye
-            document.getElementById('btn-send-otp').innerText = "Checking backend...";
-            document.getElementById('btn-send-otp').disabled = true;
+            const fullPhoneNumber = '+91' + rawPhone;
 
             try {
-                // COST SAVER CHECK: Kya is dukan par ye number pehle aa chuka hai?
-                const q = query(collection(db, "customers"), where("phone", "==", userPhone), where("shopId", "==", currentShopId));
+                // DATA SEGREGATION FILTER: Check if number exists under this specific shop
+                const q = query(
+                    collection(db, "customers"),
+                    where("phone", "==", rawPhone),
+                    where("shopId", "==", currentShopId)
+                );
+
                 const querySnapshot = await getDocs(q);
 
+                // CONDITION A: USER NUMBER ALREADY MATCHED IN SHOP DATA
                 if (!querySnapshot.empty) {
-                    // Agar purana user hai, OTP mat bhejo, direct wahi coupon screen khol do
-                    let oldCoupon = "";
-                    querySnapshot.forEach(doc => oldCoupon = doc.data().coupon);
-                    
-                    prizeText.innerText = oldCoupon;
-                    phoneSection.style.display = 'none';
-                    scratchSection.style.display = 'block';
-                    canvas.style.display = 'none'; // Pehle hi scratched hai
-                    statusMsg.innerText = "🎉 Aap ye coupon pehle hi claim kar chuke hain!";
-                    statusMsg.style.display = 'block';
-                    dataSaved = true;
-                } else {
-                    // Naya User hai -> Send real OTP via Firebase
-                    const appVerifier = window.recaptchaVerifier;
-                    const confirmationResult = await signInWithPhoneNumber(auth, userPhone, appVerifier);
-                    
-                    confirmationResultGlobal = confirmationResult;
-                    // Switch to OTP screen
-                    phoneSection.style.display = 'none';
-                    otpSection.style.display = 'block';
+                    let existingCustomer = querySnapshot.docs[0].data();
+                    alert("Aap is dukan se pehle hi coupon jeet chuke hain! Aapka purana coupon load kiya ja raha hai.");
+                    showCouponScreen(existingCustomer.coupon); 
+                    return; // Yahi se execution flow end (OTP blocked)
                 }
+
+                // CONDITION B: NEW CUSTOMER DETECTED -> INITIATE RECAPTCHA & OTP
+                const appVerifier = window.recaptchaVerifier;
+                confirmationResult = await signInWithPhoneNumber(auth, fullPhoneNumber, appVerifier);
+                
+                // UI panel swapping
+                document.getElementById('phone-box').style.display = 'none';
+                document.getElementById('otp-box').style.display = 'block';
+
             } catch (error) {
-                console.error(error);
-                alert("Error: OTP nahi ja pa rha. Console check karein.");
-                document.getElementById('btn-send-otp').innerText = "Send OTP Verification ➔";
-                document.getElementById('btn-send-otp').disabled = false;
+                console.error("Firebase Auth or Firestore validation exception:", error);
+                alert("Kuch dikkat aayi hai. Kripya apna internet aur console log check karein.");
             }
         });
 
-        // 2. BUTTON CLICK: VERIFY OTP CODE
+        // 3. SECONDARY ACTION: VERIFY RECEIVED OTP & COMMENCE DATABASE ROW CREATION
         document.getElementById('btn-verify-otp').addEventListener('click', async () => {
-            const code = document.getElementById('otp-code').value;
-            if(code.length !== 6 || isNaN(code)) {
-                alert("Sahi 6-digit OTP code dalein!");
+            const code = document.getElementById('otp-input').value.trim();
+            const rawPhone = document.getElementById('phone-input').value.trim();
+
+            if (code.length !== 6) {
+                alert("Kripya 6-digit ka full OTP dalein.");
                 return;
             }
 
-            document.getElementById('btn-verify-otp').innerText = "Verifying OTP...";
-            document.getElementById('btn-verify-otp').disabled = true;
-
             try {
-                // Code cross-check ho raha hai Google Server par
-                await confirmationResultGlobal.confirm(code);
+                // Authenticate code via Firebase 
+                await confirmationResult.confirm(code);
                 
-                // Success! OTP sahi hai, ab game setup karo
-                finalPrize = prizesPool[Math.floor(Math.random() * prizesPool.length)];
-                prizeText.innerText = finalPrize;
+                // Dynamic unique safe secure code generation 
+                const newCouponCode = "SAVE-" + Math.floor(100000 + Math.random() * 900000);
 
-                otpSection.style.display = 'none';
-                scratchSection.style.display = 'block';
-                initScratchCanvas();
+                // Database mapping insertion
+                await addDoc(collection(db, "customers"), {
+                    phone: rawPhone,
+                    coupon: newCouponCode,
+                    shopId: currentShopId, 
+                    timestamp: serverTimestamp()
+                });
+
+                // Display final scratch coupon panel
+                showCouponScreen(newCouponCode);
+
             } catch (error) {
-                alert("Galat OTP! Kripya dobara check karein.");
-                document.getElementById('btn-verify-otp').innerText = "Verify & Unlock Card ➔";
-                document.getElementById('btn-verify-otp').disabled = false;
+                console.error("OTP authentication execution failed:", error);
+                alert("Galat OTP! Kripya sahi code dalein ya page refresh karke dobara koshish karein.");
             }
         });
 
-        // 3. CANVAS ENGINE (3D Metallic Scratch Effect)
-        function initScratchCanvas() {
-            const ctx = canvas.getContext('2d');
+        // 4. STANDALONE INTERFACE CONTROLLER FOR SHOWING COUPON RESULT
+        function showCouponScreen(couponCode) {
+            document.getElementById('otp-box').style.display = 'none';
+            document.getElementById('phone-box').style.display = 'none';
             
-            // 3D Metallic Slate Paint Create karna
-            let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#94a3b8');
-            gradient.addColorStop(0.5, '#cbd5e1');
-            gradient.addColorStop(1, '#64748b');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const resultBox = document.getElementById('coupon-result-box');
+            const txtElement = document.getElementById('coupon-text');
             
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 16px Arial';
-            ctx.textAlign = 'center';
-            ctx.shadowColor = "rgba(0,0,0,0.3)";
-            ctx.shadowBlur = 4;
-            ctx.fillText('✨ UNGLI SE YAHAN SCRATCH KAREIN ✨', canvas.width / 2, canvas.height / 2 + 5);
-            ctx.shadowBlur = 0; // Reset shadow
-
-            let isDrawing = false;
-
-            function scratch(e) {
-                if (!isDrawing) return;
-                e.preventDefault();
-                const rect = canvas.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                const x = clientX - rect.left;
-                const y = clientY - rect.top;
-                
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.beginPath();
-                ctx.arc(x, y, 28, 0, Math.PI * 2); // 28px thick smooth stroke
-                ctx.fill();
-            }
-
-            canvas.addEventListener('mousedown', () => isDrawing = true);
-            canvas.addEventListener('mouseup', () => { isDrawing = false; saveToFirebase(); });
-            canvas.addEventListener('mousemove', scratch);
-
-            canvas.addEventListener('touchstart', () => isDrawing = true);
-            canvas.addEventListener('touchend', () => { isDrawing = false; saveToFirebase(); });
-            canvas.addEventListener('touchmove', scratch);
-        }
-
-        // 4. DATA ARCHIVE (Secure Save Function)
-        async function saveToFirebase() {
-            if (dataSaved) return; 
-            dataSaved = true;
-
-            try {
-                await addDoc(collection(db, "customers"), {
-                    phone: userPhone,
-                    coupon: finalPrize,
-                    shopId: currentShopId,
-                    timestamp: new Date()
-                });
-                statusMsg.style.display = 'block';
-            } catch (error) {
-                console.error("Save error: ", error);
-                dataSaved = false;
-            }
+            resultBox.style.display = 'block';
+            txtElement.innerText = couponCode;
         }
     </script>
 </body>
