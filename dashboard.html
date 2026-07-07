@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Shop Owner Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 20px; min-height: 100vh; }
+        
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        /* 3D Glassmorphism Login Box */
+        .login-box {
+            background: #1e293b;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        
+        /* Main Dashboard (Hidden by default) */
+        .dashboard-view { display: none; }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .input-field {
+            width: 100%; padding: 12px; margin: 10px 0;
+            border: 2px solid #334155; background: #0f172a;
+            color: white; border-radius: 8px; font-size: 16px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white; border: none; padding: 12px 20px;
+            border-radius: 8px; cursor: pointer; font-weight: bold;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        .btn-danger { background: #ef4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+        
+        .link-box {
+            background: #1e293b; padding: 15px; border-radius: 10px;
+            margin-bottom: 20px; border-left: 5px solid #3b82f6;
+        }
+        
+        /* 3D Data Table */
+        table {
+            width: 100%; border-collapse: collapse; margin-top: 10px;
+            background: #1e293b; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #334155; color: #3b82f6; font-weight: bold; }
+        tr:hover { background: #273549; }
+        
+        .badge {
+            background: #22c55e; color: white; padding: 4px 10px;
+            border-radius: 6px; font-size: 12px; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div id="login-screen" class="login-box">
+            <h2>🔐 Owner Login</h2>
+            <p style="color: #94a3b8; font-size: 14px; margin-bottom: 15px;">Apna registered shop email aur password dalein.</p>
+            <input type="email" id="login-email" class="input-field" placeholder="nikhil@gmail.com">
+            <input type="password" id="login-pass" class="input-field" placeholder="******">
+            <button id="btn-login" class="btn" style="width: 100%; margin-top: 10px;">Dashboard Kholo ➔</button>
+        </div>
+
+        <div id="dashboard-screen" class="dashboard-view">
+            <div class="header">
+                <div>
+                    <h2 id="welcome-text">Dukan Dashboard</h2>
+                    <p id="owner-email" style="color: #3b82f6; font-size: 14px; font-weight: bold;"></p>
+                </div>
+                <button id="btn-logout" class="btn btn-danger">Log Out 🚪</button>
+            </div>
+
+            <div class="link-box">
+                <h4>🔗 Aapka Customer QR / Lucky Draw Link:</h4>
+                <p id="shop-url" style="color: #a7f3d0; margin-top: 5px; font-family: monospace; font-size: 15px; word-break: break-all;"></p>
+            </div>
+
+            <h3>🎁 Grahakon ke Jeete Hue Coupons</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mobile Number</th>
+                        <th>Jeeta Hua Coupon</th>
+                        <th>Tarikh aur Samay</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="data-rows">
+                    </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Same exact credentials configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrmVNSFa6mt1nJiY3kgkxHNYJyUWu625o",
+            authDomain: "scratch-vault-001.firebaseapp.com",
+            projectId: "scratch-vault-001",
+            storageBucket: "scratch-vault-001.firebasestorage.app",
+            messagingSenderId: "1031351262946",
+            appId: "1:1031351262946:web:5e4a10c660e864558bc8bb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        const loginScreen = document.getElementById('login-screen');
+        const dashboardScreen = document.getElementById('dashboard-screen');
+        const dataRows = document.getElementById('data-rows');
+
+        // 1. LOGIN TRIGGER FUNCTION
+        document.getElementById('btn-login').addEventListener('click', async () => {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                // Auth State state handler khud hi handle kar lega login ke baad
+            } catch (error) {
+                alert("Login Failed! Sahi Email aur Password daalein.");
+            }
+        });
+
+        // 2. LIVE STATE TRACKER (Yeh dekhta hai kaun login hai)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User login hai -> Dashboard dikhao
+                loginScreen.style.display = 'none';
+                dashboardScreen.style.display = 'block';
+                document.getElementById('owner-email').innerText = "Shop ID: " + user.email;
+                
+                // Unka personal customer link generate karo
+                const baseLiveUrl = window.location.href.replace('dashboard.html', 'index.html');
+                document.getElementById('shop-url').innerText = baseLiveUrl + "?shop=" + user.email;
+
+                // Unki dukan ka data load karo
+                loadShopData(user.email);
+            } else {
+                // Logged out -> Login screen dikhao
+                loginScreen.style.display = 'block';
+                dashboardScreen.style.display = 'none';
+            }
+        });
+
+        // 3. FETCH SECURE SHOP DATA
+        async function loadShopData(shopEmail) {
+            dataRows.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Loading coupons...</td></tr>";
+            
+            try {
+                // DATA SEGREGATION QUERY: Sirf login kiye hue email ka data pull karna
+                const q = query(
+                    collection(db, "customers"), 
+                    where("shopId", "==", shopEmail)
+                );
+                
+                const querySnapshot = await getDocs(q);
+                dataRows.innerHTML = ""; // Clear loader
+
+                if(querySnapshot.empty) {
+                    dataRows.innerHTML = "<tr><td colspan='4' style='text-align:center; color:#94a3b8;'>Abhi tak kisi customer ne scratch nahi kiya hai.</td></tr>";
+                    return;
+                }
+
+                // Sorting data in frontend manually to avoid index creation error
+                let docsArray = [];
+                querySnapshot.forEach(doc => {
+                    docsArray.push(doc.data());
+                });
+                
+                // Timestamp ke basis par naya data sabse upar sort karna
+                docsArray.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
+
+                docsArray.forEach(data => {
+                    const dateObj = data.timestamp ? data.timestamp.toDate() : new Date();
+                    const formattedDate = dateObj.toLocaleDateString('hi-IN') + " | " + dateObj.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'});
+                    
+                    const row = `
+                        <tr>
+                            <td style="font-weight:bold; color:#cbd5e1;">${data.phone}</td>
+                            <td style="color:#f59e0b; font-weight:bold;">🎉 ${data.coupon}</td>
+                            <td style="color:#94a3b8; font-size:14px;">${formattedDate}</td>
+                            <td><span class="badge">Verified</span></td>
+                        </tr>
+                    `;
+                    dataRows.innerHTML += row;
+                });
+
+            } catch (error) {
+                console.error("Error loading dashboard data: ", error);
+                dataRows.innerHTML = "<tr><td colspan='4' style='text-align:center; color:#ef4444;'>Data loading error! Console check karein.</td></tr>";
+            }
+        }
+
+        // 4. LOGOUT ACTION
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            signOut(auth);
+        });
+    </script>
+</body>
+</html>
