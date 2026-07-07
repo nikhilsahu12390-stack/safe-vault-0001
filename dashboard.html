@@ -83,8 +83,9 @@
 
         /* WhatsApp Small Icon Button */
         .btn-whatsapp {
-            background: #22c55e; color: white; padding: 4px 8px; border-radius: 6px;
-            font-size: 13px; text-decoration: none; margin-right: 8px; display: inline-block;
+            background: #22c55e; color: white; padding: 6px 12px; border-radius: 6px;
+            font-size: 13px; text-decoration: none; margin-right: 10px; display: inline-flex;
+            align-items: center; justify-content: center; font-weight: bold;
             box-shadow: 0 2px 5px rgba(34, 197, 94, 0.3);
         }
         .btn-whatsapp:hover { background: #16a34a; }
@@ -255,8 +256,9 @@
 
                 const row = `
                     <tr>
-                        <td style="font-weight:bold; color:#cbd5e1; white-space: nowrap;">
-                            <a href="https://wa.me/91${data.phone}" target="_blank" class="btn-whatsapp" title="WhatsApp message karein">💬</a>
+                        <td style="font-weight:bold; color:#cbd5e1; white-space: nowrap; display: flex; align-items: center;">
+                            <!-- Pure Direct Chat Link (No Auto-Text) -->
+                            <a href="https://wa.me/91${data.phone}" target="_blank" class="btn-whatsapp" title="WhatsApp par chat karein">💬 Chat</a>
                             ${data.phone}
                         </td>
                         <td style="color:#f59e0b; font-weight:bold;">🎉 ${data.coupon}</td>
