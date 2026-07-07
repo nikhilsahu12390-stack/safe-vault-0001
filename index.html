@@ -158,7 +158,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // FAST2SMS API KEY (Yahan apni Key daalein)
+        // FAST2SMS API KEY
         const FAST2SMS_API_KEY = "iPUzT6nrBYDEycwO8uhCl9Xf25AgLm0NJxsdGvQ7SF14MH3qbIBspYfFVkdbLhR18moxD2PIM7wangQS"; 
         let generatedOTP = null;
 
@@ -178,13 +178,19 @@
         const currentShopId = urlParams.get('shop') || 'nikhil@gmail.com'; 
 
         // 2. PRIMARY ACTION: SEND OTP VIA FAST2SMS
-        document.getElementById('btn-send-otp').addEventListener('click', async () => {
+        const sendOtpBtn = document.getElementById('btn-send-otp');
+
+        sendOtpBtn.addEventListener('click', async () => {
             const rawPhone = document.getElementById('phone-input').value.trim();
             
             if (rawPhone.length !== 10) {
                 alert("Kripya sahi 10-digit ka mobile number dalein.");
                 return;
             }
+
+            // Click karte hi button block aur text change
+            sendOtpBtn.disabled = true;
+            sendOtpBtn.innerText = "Sending... ⏳";
 
             try {
                 // Check if user already exists in DB
@@ -210,11 +216,17 @@
                     document.getElementById('otp-box').style.display = 'block';
                 } else {
                     alert("SMS Error: " + data.message);
+                    // Error aane par button wapas normal karein
+                    sendOtpBtn.disabled = false;
+                    sendOtpBtn.innerText = "Coupon Unlock Karein ➔";
                 }
 
             } catch (error) {
                 console.error("Error:", error);
                 alert("Kuch dikkat aayi, console check karein.");
+                // Network error aane par button wapas normal karein
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.innerText = "Coupon Unlock Karein ➔";
             }
         });
 
