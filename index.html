@@ -80,7 +80,7 @@
         }
         .btn:active { transform: translateY(0); }
 
-        #otp-box, #coupon-result-box { display: none; }
+        #otp-box, #coupon-result-box, #share-box { display: none; }
 
         .coupon-box {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -140,6 +140,20 @@
             <button id="btn-verify-otp" class="btn">Verify & Scratch ➔</button>
         </div>
 
+        <div id="share-box">
+            <div class="logo-icon">🚀</div>
+            <h2>Dosto ko Invite Karein!</h2>
+            <p>Apna coupon unlock karne ke liye is link ko apne 2 dosto ko share karein. Unke login karte hi aapka coupon dikh jayega!</p>
+            
+            <div class="coupon-box" style="border-color: #3b82f6;">
+                <div id="referral-count" class="coupon-code" style="color: #3b82f6; font-size: 32px;">0 / 2 Joined</div>
+                <p style="margin-bottom:0; font-size:12px; color:#64748b;">Dosto ke register karne ke baad niche status check karein.</p>
+            </div>
+            <br>
+            <button id="btn-share-whatsapp" class="btn" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); margin-bottom: 12px;">WhatsApp Par Share Karein 💬</button>
+            <button id="btn-check-status" class="btn">Status Check Karein 🔄</button>
+        </div>
+
         <div id="coupon-result-box">
             <div class="logo-icon">🎉</div>
             <h2>Badhai Ho!</h2>
@@ -176,6 +190,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const currentShopId = urlParams.get('shop') || 'nikhil@gmail.com'; 
+        const currentRefId = urlParams.get('ref') || null; // Kisine invite kiya hai toh uski ID
 
         // 2. PRIMARY ACTION: SEND OTP VIA FAST2SMS
         const sendOtpBtn = document.getElementById('btn-send-otp');
@@ -198,8 +213,18 @@
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
-                    alert("Aap is dukan se pehle hi coupon jeet chuke hain!");
-                    showCouponScreen(querySnapshot.docs[0].data().coupon);
+                    const userData = querySnapshot.docs[0].data();
+                    
+                    // Agar user pehle se hai, check karo kya uske 2 referrals poore ho gaye hain?
+                    const refQ = query(collection(db, "customers"), where("referredBy", "==", rawPhone), where("shopId", "==", currentShopId));
+                    const refSnapshot = await getDocs(refQ);
+                    
+                    if (refSnapshot.size >= 2) {
+                        showCouponScreen(userData.coupon);
+                    } else {
+                        alert("Aapka number pehle se verified hai! Kripya coupon unlock karne ke liye 2 dosto ko login karwayein.");
+                        showShareScreen(rawPhone, refSnapshot.size);
+                    }
                     return;
                 }
 
@@ -216,7 +241,6 @@
                     document.getElementById('otp-box').style.display = 'block';
                 } else {
                     alert("SMS Error: " + data.message);
-                    // Error aane par button wapas normal karein
                     sendOtpBtn.disabled = false;
                     sendOtpBtn.innerText = "Coupon Unlock Karein ➔";
                 }
@@ -224,7 +248,6 @@
             } catch (error) {
                 console.error("Error:", error);
                 alert("Kuch dikkat aayi, console check karein.");
-                // Network error aane par button wapas normal karein
                 sendOtpBtn.disabled = false;
                 sendOtpBtn.innerText = "Coupon Unlock Karein ➔";
             }
@@ -238,22 +261,76 @@
             if (userOTP == generatedOTP) {
                 const newCouponCode = "SAVE-" + Math.floor(100000 + Math.random() * 900000);
                 
+                // Naya user save karte waqt 'referredBy' field bhi bhej rahe hain
                 await addDoc(collection(db, "customers"), {
                     phone: rawPhone,
                     coupon: newCouponCode,
                     shopId: currentShopId, 
+                    referredBy: currentRefId, 
                     timestamp: serverTimestamp()
                 });
 
-                showCouponScreen(newCouponCode);
+                // Login hote hi turant use share screen par bhejein (Naye user ke referrals starting mein 0 honge)
+                showShareScreen(rawPhone, 0);
             } else {
                 alert("Galat OTP! Kripya dobara koshish karein.");
             }
         });
 
+        // REFFERAL SHARE SCREEN LOGIC
+        function showShareScreen(phone, inviteCount) {
+            document.getElementById('otp-box').style.display = 'none';
+            document.getElementById('phone-box').style.display = 'none';
+            document.getElementById('coupon-result-box').style.display = 'none';
+            document.getElementById('share-box').style.display = 'block';
+            
+            document.getElementById('referral-count').innerText = `${inviteCount} / 2 Joined`;
+
+            // WhatsApp Share Button Setup
+            const shareLink = `${window.location.origin}${window.location.pathname}?shop=${currentShopId}&ref=${phone}`;
+            const whatsappText = encodeURIComponent(`Hey! Mujhe is dukan par ek gazab ka Lucky Draw coupon mil raha hai. Niche diye link par click karke tum bhi apna free coupon claim karo: ${shareLink}`);
+            
+            document.getElementById('btn-share-whatsapp').onclick = () => {
+                window.open(`https://api.whatsapp.com/send?text=${whatsappText}`, '_blank');
+            };
+
+            // Manual Live Status Checking
+            document.getElementById('btn-check-status').onclick = async () => {
+                const statusBtn = document.getElementById('btn-check-status');
+                statusBtn.disabled = true;
+                statusBtn.innerText = "Checking... ⏳";
+
+                try {
+                    const refQ = query(collection(db, "customers"), where("referredBy", "==", phone), where("shopId", "==", currentShopId));
+                    const refSnapshot = await getDocs(refQ);
+                    const currentCount = refSnapshot.size;
+
+                    document.getElementById('referral-count').innerText = `${currentCount} / 2 Joined`;
+
+                    if (currentCount >= 2) {
+                        // User ka coupon nikalne ke liye query karein
+                        const q = query(collection(db, "customers"), where("phone", "==", phone), where("shopId", "==", currentShopId));
+                        const qSnap = await getDocs(q);
+                        if (!qSnap.empty) {
+                            alert("Badhai ho! Aapke 2 dosto ne login kar liya hai. Aapka coupon unlock ho gaya! 🎉");
+                            showCouponScreen(qSnap.docs[0].data().coupon);
+                        }
+                    } else {
+                        alert(`Abhi tak sirf ${currentCount} dost ne login kiya hai. Coupon ke liye kam se kam 2 dosto ka login zaroori hai!`);
+                    }
+                } catch(err) {
+                    console.error(err);
+                } finally {
+                    statusBtn.disabled = false;
+                    statusBtn.innerText = "Status Check Karein 🔄";
+                }
+            };
+        }
+
         function showCouponScreen(couponCode) {
             document.getElementById('otp-box').style.display = 'none';
             document.getElementById('phone-box').style.display = 'none';
+            document.getElementById('share-box').style.display = 'none';
             document.getElementById('coupon-result-box').style.display = 'block';
             document.getElementById('coupon-text').innerText = couponCode;
         }
